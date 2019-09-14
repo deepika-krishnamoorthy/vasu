@@ -2,7 +2,7 @@ pipeline {
     agent any
     stages {
         stage('Git') {
-            steps { git 'https://github.com/pandian3k/vasu.git' }
+            steps { git 'https://github.com/deepika-krishnamoorthy/vasu.git' }
         }
 	stage('Build') {
 	            steps { sh label: '', script: 'mvn clean'
@@ -15,7 +15,7 @@ pipeline {
             }
             steps {
                 script {
-                    app = docker.build("dockerpandian/hippo")
+                    app = docker.build("deepikakrishnamoorthy/hippo")
                     app.inside {
                         sh 'echo $(curl localhost:8080)'
                     }
@@ -42,7 +42,7 @@ pipeline {
             steps {
                 input 'Deploy to Production?'
                 milestone(1)
-                withCredentials([usernamePassword(credentialsId: 'deploy', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'webserver', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
                     script {
                         sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker pull dockerpandian/hippo:${env.BUILD_NUMBER}\""
                         try {
